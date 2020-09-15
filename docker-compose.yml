@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  web:
+    build:
+      dockerfile: ./docker/Dockerfile-nginx
+      context: .
+    volumes:
+      - ./:/var/www
+    environment:
+      - WEB_DOCUMENT_ROOT=/var/www/public
+    links:
+      - db
+    depends_on:
+      - db
+    ports:
+      - "8080:80"
+
+  db:
+    image: mysql:5.7.20
+    volumes:
+      - ./docker/db:/var/lib/mysql
+    ports:
+      - "34400:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=currency_converter
+
+  db_testing:
+    image: mysql:5.7.20
+    volumes:
+      - ./docker/db_test:/var/lib/mysql
+    ports:
+      - "34500:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=currency_converter_test
